@@ -1,5 +1,7 @@
 import subprocess
 
+from charset_normalizer import from_bytes
+
 
 def format(item: str, template: str) -> tuple[str, str | None]:
     return template.format(item), None
@@ -10,10 +12,12 @@ def command(item: str, command: str) -> tuple[str, str | None]:
         command.format(item),
         shell=True,
         capture_output=True,
-        text=True,
     )
 
-    return proccess.stdout.strip(), None if proccess.returncode == 0 else proccess.stderr.strip()
+    stdout = str(from_bytes(proccess.stdout).best())
+    stderr = str(from_bytes(proccess.stderr).best())
+
+    return stdout, None if proccess.returncode == 0 else stderr
 
 
 def ping(item: str) -> tuple[str, str | None]:
