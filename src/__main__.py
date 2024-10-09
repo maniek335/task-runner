@@ -74,21 +74,19 @@ def main() -> None:
                     # Execute task
                     match task["type"]:
                         case "format":
-                            output, error = tasks.format(
-                                item, task["template"])
+                            output, error = tasks.format(item, task["template"])
 
                         case "ping":
                             output, error = tasks.ping(item)
 
                         case "command":
-                            output, error = tasks.command(
-                                item, task["command"])
+                            output, error = tasks.command(item, task["command"])
 
                     # Append output to row
                     row.append(output)
 
                     # Abort on error
-                    if task.get("abort_on_error") and error:
+                    if task.get("abort_on_error", False) and error is not None:
                         logger.info(f"└── Aborting due to error: {error}")
                         break
 
